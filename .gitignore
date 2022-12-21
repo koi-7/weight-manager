@@ -1,1 +1,4 @@
 __pycache__/
+
+conf/db_url
+conf/token
