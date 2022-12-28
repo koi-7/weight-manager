@@ -15,6 +15,64 @@ DB_URL_PATH = os.path.join(CONF_DIR, 'db_url')
 TOKEN_PATH = os.path.join(CONF_DIR, 'token')
 
 
+class Manager:
+    def __init__(self):
+        self.__dbid = None
+        self.__token = None
+        self.__data = None
+
+    @property
+    def dbid(self):
+        return self.__dbid
+
+    @property
+    def token(self):
+        return self.__token
+
+    @property
+    def data(self):
+        return self.__data
+
+    def fetch_dbid(self):
+        with open(DB_URL_PATH, 'r') as f:
+            url =  f.readline().rstrip('\n')
+        l = url.split('/')
+        self.__dbid = l[4].split('?')[0]
+
+    def fetch_token(self):
+        with open(TOKEN_PATH, 'r') as f:
+            self.__token = f.readline().rstrip('\n')
+
+    def fetch_data(self):
+        req_url = 'https://api.notion.com/v1/databases/' + self.dbid + '/query'
+        headers = {'Authorization': 'Bearer ' + self.token,
+                   'Content-Type': 'application/json; charset=UTF-8',
+                   'Notion-Version': '2022-06-28'}
+
+        response = requests.post(url=req_url, headers=headers)
+        json_data = response.json()
+        results = json_data.get('results')
+
+        try:
+            date_list = [r['properties']['Date']['title'][0]['text']['content'] for r in results]
+            weight_list = [r['properties']['Weight']['number'] for r in results]
+        except Exception:
+            print('DB URL or token is invalid.')
+            exit(1)
+
+        dic = dict(zip(date_list, weight_list))
+
+        self.__data = dict(sorted(dic.items()))
+
+
+def arg_check():
+    if len(sys.argv) == 1:
+        try:
+            raise Exception
+        except Exception:
+            print('See usage with -h or --help option.')
+            sys.exit(1)
+
 def get_option():
     argparser = ArgumentParser()
 
@@ -24,75 +82,63 @@ def get_option():
 
     return argparser.parse_args()
 
-def make_files(db_url, token):
+def check_files():
+    if (not os.path.exists(DB_URL_PATH)) or (not os.path.exists(TOKEN_PATH)):
+        try:
+            raise Exception
+        except Exception:
+            print("Conf files don't exist. Use --set option to set DB and token info.")
+            sys.exit(1)
+
+def make_files():
     if not os.path.isdir(CONF_DIR):
         os.mkdir(CONF_DIR)
 
+    db_url = input('Input DB URL: ')
     with open(DB_URL_PATH, 'w') as f:
         f.write(db_url)
+
+    token = input('Input Token: ')
     with open(TOKEN_PATH, 'w') as f:
         f.write(token)
 
-def get_dbid():
-    with open(DB_URL_PATH, 'r') as f:
-        url =  f.readline().rstrip('\n')
-    l = url.split('/')
-    dbid = l[4].split('?')[0]
-    return dbid
+    print('Setting completed.')
 
-def get_token():
-    with open(TOKEN_PATH, 'r') as f:
-        token = f.readline().rstrip('\n')
-    return token
+def show_graph(data):
+    date_list = list(data.keys())
+    weight_list = list(data.values())
+
+    plt.plot(date_list, weight_list)
+    plt.xticks(rotation=90)
+    plt.show()
+
+def show_list(data, num_of_record):
+    date_list = list(data.keys())[-num_of_record:]
+    weight_list = list(data.values())[-num_of_record:]
+
+    for i in range(len(date_list)):
+        print('   ' + date_list[i] + ': ' + str(weight_list[i]) + ' kg')
 
 
 def main():
-    if len(sys.argv) == 1:
-        print('See usage with -h, --help option.')
-        sys.exit(0)
+    arg_check()
 
     args = get_option()
 
-    if args.set:
-        db_url = input('Input DB URL: ')
-        token = input('Input Token: ')
-        make_files(db_url, token)
-        print('Setting completed.')
-        sys.exit(0)
+    check_files()
 
-    dbid = get_dbid()
-    token = get_token()
+    manager = Manager()
+    manager.fetch_dbid()
+    manager.fetch_token()
+    manager.fetch_data()
 
-    req_url = 'https://api.notion.com/v1/databases/' + dbid + '/query'
+    data = manager.data
 
-    if args.graph or (args.list != None):
-        headers = {'Authorization': 'Bearer ' + token,
-                   'Content-Type': 'application/json; charset=UTF-8',
-                   'Notion-Version': '2022-06-28'}
-        response = requests.post(url=req_url, headers=headers)
-        json_data = response.json()
-        results = json_data.get('results')
-        date_list = [r['properties']['Date']['title'][0]['text']['content'] for r in results]
-        weight_list = [r['properties']['Weight']['number'] for r in results]
+    if args.graph:
+        show_graph(data)
 
-        dic = dict(zip(date_list, weight_list))
-        dic = dict(sorted(dic.items()))
-
-        date_list_sorted = list(dic.keys())
-        weight_list_sorted = list(dic.values())
-
-        if args.graph:
-            plt.plot(date_list_sorted, weight_list_sorted)
-            plt.xticks(rotation=90)
-            plt.show()
-
-        if args.list != None:
-            dlist = date_list_sorted[-args.list:]
-            wlist = weight_list_sorted[-args.list:]
-            for i in range(len(dlist)):
-                print('   ' + dlist[i] + ': ' + str(wlist[i]) + ' kg')
-
-        sys.exit(0)
+    if args.list:
+        show_list(data, args.list)
 
 
 if __name__ == '__main__':

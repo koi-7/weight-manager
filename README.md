@@ -4,11 +4,11 @@ Fetch weight data in Notion and show, list its data.
 
 # Usage
 
-Set your database URL and API token.
+Set your database URL and Notion API token.
 
 ``` bash
 $ ./main --set
-Input DB URL: https://www.notion.so/<usename>/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx?v=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Input DB URL: https://www.notion.so/<username>/<DB ID>?v=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 Input Token: secret_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
@@ -25,4 +25,4 @@ $ ./main <option>
 | -h, --help | show help message |
 | --list N | show recent N records |
 | --graph | show graph |
-| --set | set db_url nad token |
+| --set | set db_url and token |
