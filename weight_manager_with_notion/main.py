@@ -57,8 +57,8 @@ class Manager:
             date_list = [r['properties']['Date']['title'][0]['text']['content'] for r in results]
             weight_list = [r['properties']['Weight']['number'] for r in results]
         except Exception:
-            print('DB URL or token is invalid.')
-            exit(1)
+            print('DB URL or token is invalid.', file=sys.stderr)
+            sys.exit(1)
 
         dic = dict(zip(date_list, weight_list))
 
@@ -70,7 +70,7 @@ def arg_check():
         try:
             raise Exception
         except Exception:
-            print('See usage with -h or --help option.')
+            print('See usage with -h or --help option.', file=sys.stderr)
             sys.exit(1)
 
 def get_option():
@@ -87,7 +87,7 @@ def check_files():
         try:
             raise Exception
         except Exception:
-            print("Conf files don't exist. Use --set option to set DB and token info.")
+            print("Conf files don't exist. Use --set option to set DB and token info.", file=sys.stderr)
             sys.exit(1)
 
 def make_files():
