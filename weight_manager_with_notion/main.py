@@ -95,10 +95,10 @@ def make_files():
         os.mkdir(CONF_DIR)
 
     db_url = input('Input DB URL: ')
+    token = input('Input Token: ')
+
     with open(DB_URL_PATH, 'w') as f:
         f.write(db_url)
-
-    token = input('Input Token: ')
     with open(TOKEN_PATH, 'w') as f:
         f.write(token)
 
