@@ -63,11 +63,7 @@ class Manager:
             date_list = [r['properties']['Date']['title'][0]['text']['content'] for r in results]
             weight_list = [r['properties']['Weight']['number'] for r in results]
         except Exception:
-<<<<<<< HEAD
-            print('DB URL or token is invalid.', file=sys.stderr)
-=======
             print('Error: Name or type of column is wrong.')
->>>>>>> develop
             sys.exit(1)
 
         dic = dict(zip(date_list, weight_list))
@@ -80,11 +76,7 @@ def arg_check():
         try:
             raise Exception
         except Exception:
-<<<<<<< HEAD
-            print('See usage with -h or --help option.', file=sys.stderr)
-=======
             print('Error: Lack of argument. See usage with -h or --help option.')
->>>>>>> develop
             sys.exit(1)
 
 def get_option():
