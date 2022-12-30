@@ -49,7 +49,13 @@ class Manager:
                    'Content-Type': 'application/json; charset=UTF-8',
                    'Notion-Version': '2022-06-28'}
 
-        response = requests.post(url=req_url, headers=headers)
+        try:
+            response = requests.post(url=req_url, headers=headers)
+            response.raise_for_status()
+        except Exception:
+            print('Error: DB URL or token is invalid.')
+            sys.exit(1)
+
         json_data = response.json()
         results = json_data.get('results')
 
@@ -57,7 +63,11 @@ class Manager:
             date_list = [r['properties']['Date']['title'][0]['text']['content'] for r in results]
             weight_list = [r['properties']['Weight']['number'] for r in results]
         except Exception:
+<<<<<<< HEAD
             print('DB URL or token is invalid.', file=sys.stderr)
+=======
+            print('Error: Name or type of column is wrong.')
+>>>>>>> develop
             sys.exit(1)
 
         dic = dict(zip(date_list, weight_list))
@@ -70,7 +80,11 @@ def arg_check():
         try:
             raise Exception
         except Exception:
+<<<<<<< HEAD
             print('See usage with -h or --help option.', file=sys.stderr)
+=======
+            print('Error: Lack of argument. See usage with -h or --help option.')
+>>>>>>> develop
             sys.exit(1)
 
 def get_option():
@@ -87,7 +101,7 @@ def check_files():
         try:
             raise Exception
         except Exception:
-            print("Conf files don't exist. Use --set option to set DB and token info.", file=sys.stderr)
+            print("Error: Conf files don't exist. Use --set option to set DB and token info.")
             sys.exit(1)
 
 def make_files():
@@ -102,7 +116,7 @@ def make_files():
     with open(TOKEN_PATH, 'w') as f:
         f.write(token)
 
-    print('Setting completed.')
+    print('Info: Setting completed.')
 
 def show_graph(data):
     date_list = list(data.keys())
