@@ -114,6 +114,10 @@ def show_graph(data):
     date_list = list(data.keys())
     weight_list = list(data.values())
 
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    ax.grid(which = "major", axis = "y", color = "gray",
+            alpha = 0.3, linestyle = "-", linewidth = 1)
     plt.plot(date_list, weight_list)
     plt.xticks(rotation=90)
     plt.show()
