@@ -39,7 +39,7 @@ You can get the database URL to click `…` on the right top and `Copy link to v
 For Notion API token, please look up by yourself.
 
 ``` bash
-$ ./main --set
+$ python3 -m weight-maneger-with-notion --set
 Input DB URL: https://www.notion.so/.../...?v=...
 Input Token: secret_...
 ```
@@ -47,7 +47,7 @@ Input Token: secret_...
 Show or list your data with option.
 
 ``` bash
-$ ./main <option>
+$ python3 -m weight-maneger-with-notion <option>
 ```
 
 # Options
@@ -65,8 +65,8 @@ My weight is TOP SECRET😎😎.
 
 ## List
 
-<img src="https://user-images.githubusercontent.com/61448492/209899610-94dfa7b5-c605-4b65-92a9-d958e986c291.png">
+<img src="https://user-images.githubusercontent.com/61448492/210905289-66e2f166-5342-499c-b260-9d573dd8f463.png">
 
 ## Graph
 
-<img src="https://user-images.githubusercontent.com/61448492/209900232-b908eb4d-7004-4a59-a361-ec5165504ff0.png">
+<img src="https://user-images.githubusercontent.com/61448492/210905298-b5605a5f-aa27-423e-a634-caf6f6f24062.png">
