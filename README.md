@@ -20,7 +20,7 @@ $ git clone https://github.com/koi-7/weight-manager.git
 
 - `notion_database_url`: Notion の DB の URL
 - `notion_token`: Notion のトークン
-- `slack_channel_id`: Slack のチャンネル ID
+- `slack_channel_url`: Slack のチャンネル URL
 - `slack_token`: Slack のトークン
 
 Notion、Slack の設定等については省略
@@ -33,7 +33,7 @@ weight-manager
 |-- data
 |   |-- notion_database_url
 |   |-- notion_token
-|   |-- slack_channel_id
+|   |-- slack_channel_url
 |   `-- slack_token
 |-- requirements.txt
 `-- weight-manager

@@ -1,6 +1,7 @@
 import io
 
 import matplotlib.pyplot as plt
+import re
 import requests
 
 
@@ -9,11 +10,10 @@ class Functions:
         pass
 
     @classmethod
-    def get_dbid(self, path):
+    def get_database_id(self, path):
         with open(path, 'r') as f:
             url =  f.readline().rstrip('\n')
-        l = url.split('/')
-        return l[4].split('?')[0]
+        return re.split('[/?]', url)[-2]
 
     @classmethod
     def get_token(self, path):
@@ -59,6 +59,12 @@ class Functions:
         plt.close(fig)
 
         return sio
+
+    @classmethod
+    def get_channel_id(self, path):
+        with open(path, 'r') as f:
+            url =  f.readline().rstrip('\n')
+        return url.split('/')[-1]
 
     @classmethod
     def send_notify(self, sio, slack_token, slack_channel):
