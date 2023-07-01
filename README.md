@@ -59,3 +59,17 @@ python3 -m weight-manager
 実行するとその月の体重遷移グラフが Slack に投稿される
 
 ![](https://github.com/koi-7/weight-manager/assets/61448492/7c58300c-2aba-453e-b9a3-11bf88ff5bca)
+
+## Example
+
+スクリプトをサーバ上において例えば以下のように Cron を設定しておけば月末にはその月のグラフレポートを Slack 上で確認できる
+
+``` bash
+$ crontab -e
+```
+
+```
+CRON_TZ=Asia/Tokyo
+PYTHONPATH=$PYTHONPATH:/opt/weight-manager/
+55 23 28-31 * * /usr/bin/test $(date -d '+1 day' +\%d) -eq 1 && /usr/bin/python3 -m weight-manager
+```
