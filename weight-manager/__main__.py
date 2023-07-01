@@ -16,14 +16,11 @@ SLACK_CHANNEL_URL_PATH = os.path.join(DATA_DIR, 'slack_channel_url')
 SLACK_TOKEN_PATH = os.path.join(DATA_DIR, 'slack_token')
 
 
-
 def main():
     notion_database_id = Functions.get_database_id(NOTION_DATABASE_URL_PATH)
     notion_token = Functions.get_token(NOTION_TOKEN_PATH)
-
-    yesterday = str(datetime.datetime.today().date() - datetime.timedelta(1)).replace('-', '/')
-    previous_month = yesterday[:-3]
-    record_dict = Functions.read_records(notion_database_id, notion_token, previous_month)
+    month = str(datetime.datetime.today().date()).replace('-', '/')[:-3]
+    record_dict = Functions.read_records(notion_database_id, notion_token, month)
 
     sio = Functions.savefig_to_memory(record_dict)
     slack_channel_id = Functions.get_channel_id(SLACK_CHANNEL_URL_PATH)
