@@ -56,6 +56,6 @@ $ pip3 install -r requirements.txt
 python3 -m weight-manager
 ```
 
-実行すると**先月の**体重遷移グラフが Slack に投稿される
+実行するとその月の体重遷移グラフが Slack に投稿される
 
 ![](https://github.com/koi-7/weight-manager/assets/61448492/7c58300c-2aba-453e-b9a3-11bf88ff5bca)
