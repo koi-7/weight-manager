@@ -23,6 +23,8 @@ $ git clone https://github.com/koi-7/weight-manager.git
 - `slack_channel_url`: Slack のチャンネル URL
 - `slack_token`: Slack のトークン
 
+![](https://github.com/koi-7/weight-manager/assets/61448492/1ed13ebd-ead9-4c68-9169-60a3bab3722b)
+
 Notion、Slack の設定等については省略
 
 hint: ディレクトリ構成
