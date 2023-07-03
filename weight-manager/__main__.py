@@ -2,29 +2,37 @@
 # coding: utf-8
 
 
+import configparser
 import datetime
 import os
+import re
 
 from .functions import *
 
 
 MAIN_DIR = os.path.dirname(__file__)
-DATA_DIR = os.path.join(MAIN_DIR, '../data/')
-NOTION_DATABASE_URL_PATH = os.path.join(DATA_DIR, 'notion_database_url')
-NOTION_TOKEN_PATH = os.path.join(DATA_DIR, 'notion_token')
-SLACK_CHANNEL_URL_PATH = os.path.join(DATA_DIR, 'slack_channel_url')
-SLACK_TOKEN_PATH = os.path.join(DATA_DIR, 'slack_token')
+CONFIG_PATH = os.path.join(MAIN_DIR, '../config/config.ini')
 
 
 def main():
-    notion_database_id = Functions.get_database_id(NOTION_DATABASE_URL_PATH)
-    notion_token = Functions.get_token(NOTION_TOKEN_PATH)
+    config_ini = configparser.ConfigParser()
+    config_ini.read(CONFIG_PATH, encoding='utf-8')
+
+    notion_database_url = config_ini['Notion']['database_url']
+    notion_database_id = re.split('[/?]', notion_database_url)[-2]
+
+    notion_token = config_ini['Notion']['token']
+
     month = str(datetime.datetime.today().date()).replace('-', '/')[:-3]
     record_dict = Functions.read_records(notion_database_id, notion_token, month)
 
     sio = Functions.savefig_to_memory(record_dict)
-    slack_channel_id = Functions.get_channel_id(SLACK_CHANNEL_URL_PATH)
-    slack_token = Functions.get_token(SLACK_TOKEN_PATH)
+
+    slack_token = config_ini['Slack']['token']
+
+    slack_channel_url = config_ini['Slack']['channel_url']
+    slack_channel_id = slack_channel_url.split('/')[-1]
+
     Functions.send_notify(sio, slack_token, slack_channel_id)
 
 
