@@ -1,24 +1,12 @@
 import io
 
 import matplotlib.pyplot as plt
-import re
 import requests
 
 
 class Functions:
     def __init__(self):
         pass
-
-    @classmethod
-    def get_database_id(self, path):
-        with open(path, 'r') as f:
-            url =  f.readline().rstrip('\n')
-        return re.split('[/?]', url)[-2]
-
-    @classmethod
-    def get_token(self, path):
-        with open(path, 'r') as f:
-            return f.readline().rstrip('\n')
 
     @classmethod
     def read_records(self, db_id, notion_token, year_month):
@@ -59,12 +47,6 @@ class Functions:
         plt.close(fig)
 
         return sio
-
-    @classmethod
-    def get_channel_id(self, path):
-        with open(path, 'r') as f:
-            url =  f.readline().rstrip('\n')
-        return url.split('/')[-1]
 
     @classmethod
     def send_notify(self, sio, slack_token, slack_channel):
