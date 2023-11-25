@@ -1,3 +1,4 @@
+import datetime
 import io
 
 import matplotlib.pyplot as plt
@@ -9,7 +10,7 @@ class Functions:
         pass
 
     @classmethod
-    def read_records(self, db_id, notion_token, year_month):
+    def read_records(self, db_id, notion_token, exec_date):
         url = 'https://api.notion.com/v1/databases/' + db_id + '/query'
         headers = {'Authorization': 'Bearer ' + notion_token,
                    'Content-Type': 'application/json; charset=UTF-8',
@@ -21,10 +22,10 @@ class Functions:
 
         data_dict = {}
         for result in results:
-            date = result['properties']['Date']['title'][0]['text']['content']
+            date = datetime.datetime.strptime(result['properties']['Date']['title'][0]['text']['content'], '%Y/%m/%d')
             weight = result['properties']['Weight']['number']
 
-            if date[:-3] == year_month:
+            if date.strftime('%Y/%m') == exec_date.strftime('%Y/%m'):
                 data_dict[date] = weight
 
         return dict(sorted(data_dict.items()))
@@ -35,13 +36,13 @@ class Functions:
         weight_list = list(record_dict.values())
 
         fig = plt.figure()
-        plt.subplots_adjust(bottom=0.2)
         ax = fig.add_subplot(1, 1, 1)
         ax.grid(which = "major", axis = "y", color = "gray",
                 alpha = 0.3, linestyle = "-", linewidth = 1)
-        plt.ylim(85, 95)
+        ax.axes.xaxis.set_visible(False)
+        plt.title(date_list[0].strftime('%Y/%m'))
+        plt.ylim(min(weight_list) - 5, max(weight_list) + 5)
         plt.plot(date_list, weight_list)
-        plt.xticks(rotation=90)
         sio = io.BytesIO()
         plt.savefig(sio, format='png')
         plt.close(fig)

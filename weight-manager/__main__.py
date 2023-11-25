@@ -23,8 +23,8 @@ def main():
 
     notion_token = config_ini['Notion']['token']
 
-    month = str(datetime.datetime.today().date()).replace('-', '/')[:-3]
-    record_dict = Functions.read_records(notion_database_id, notion_token, month)
+    exec_date = datetime.datetime.today().date()
+    record_dict = Functions.read_records(notion_database_id, notion_token, exec_date)
 
     sio = Functions.savefig_to_memory(record_dict)
 
