@@ -39,11 +39,13 @@ def main():
 
     records = Records()
     if re.fullmatch(r'\d{4}/(0[1-9]|1[0-2])', exec_date.date):
-        records.read_data(exec_date.date, notion)
+        response = notion.read_data(exec_date.date)
+        records.make_list(response)
     elif re.fullmatch(r'\d{4}', exec_date.date):
         for i in range(1, 13):
             date = exec_date.date + '/' + str(i).zfill(2)
-            records.read_data(date, notion)
+            response = notion.read_data(date)
+            records.make_list(response)
             time.sleep(1)
 
     records.make_dict()

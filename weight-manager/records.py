@@ -23,21 +23,7 @@ class Records:
     def dict(self, dict):
         self.__dict = dict
 
-    def read_data(self, date, notion):
-        url = 'https://api.notion.com/v1/databases/' + notion.database_id + '/query'
-        headers = {'Authorization': 'Bearer ' + notion.token,
-                   'Content-Type': 'application/json; charset=UTF-8',
-                   'Notion-Version': '2022-06-28'}
-        json = {
-            'filter': {
-                'property': 'Date',
-                'title': {
-                    'contains': date
-                }
-            }
-        }
-
-        response = requests.post(url=url, headers=headers, json=json)
+    def make_list(self, response):
         json_data = response.json()
         self.data.extend(json_data.get('results'))
 
