@@ -10,7 +10,7 @@ import time
 import urllib
 
 from .exec_date import *
-from .functions import *
+from .figure import *
 from .notion import *
 from .records import *
 from .slack import *
@@ -51,14 +51,15 @@ def main():
     records.make_dict()
     records.dict_sort()
 
-    sio = Functions.savefig_to_memory(records.dict)
+    figure = Figure(exec_date.date)
+    figure.savefig_to_memory(records.dict)
 
     slack_channel_url = config_ini['Slack']['channel_url']
     slack_channel_id = os.path.basename(urllib.parse.urlparse(slack_channel_url).path)
     slack_token = config_ini['Slack']['token']
     slack = Slack(slack_channel_id, slack_token)
 
-    slack.notify(sio)
+    slack.notify(figure.sio)
 
 
 if __name__ == '__main__':
