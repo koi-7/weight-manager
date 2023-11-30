@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 class Figure:
-    def __init__(self, title, ):
+    def __init__(self, title):
         self.__title = title
         self.__sio = io.BytesIO()
 
