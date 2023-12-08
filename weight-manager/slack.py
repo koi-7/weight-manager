@@ -1,6 +1,8 @@
 # coding: utf-8
 
 
+import time
+
 import requests
 
 
@@ -9,18 +11,12 @@ class Slack:
         self.__channel_id = channel_id
         self.__token = token
 
-    @property
-    def channel_id(self):
-        return self.__channel_id
-
-    @property
-    def token(self):
-        return self.__token
-
     def notify(self, sio):
         url = 'https://slack.com/api/files.upload'
-        headers = {'Authorization': 'Bearer ' + self.token}
-        params = {'channels': self.channel_id}
+        headers = {'Authorization': 'Bearer ' + self.__token}
+        params = {'channels': self.__channel_id}
         files = {'file': sio.getvalue()}
 
         requests.post(url=url, headers=headers, params=params, files=files)
+
+        time.sleep(1)
