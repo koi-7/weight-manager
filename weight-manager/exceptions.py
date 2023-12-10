@@ -1,5 +1,5 @@
 # coding: utf-8
 
 
-class InvalidDate(Exception):
+class InvalidDateError(Exception):
     pass

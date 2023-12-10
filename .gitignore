@@ -1,4 +1,4 @@
 __pycache__/
 
 config/*
-!config/sample.ini
+!config/template.ini
