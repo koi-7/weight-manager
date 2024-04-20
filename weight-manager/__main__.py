@@ -4,14 +4,10 @@
 
 import argparse
 import configparser
+import datetime
 
-from .consts import *
-from .data_dict import *
-from .data_list import *
-from .date import *
-from .date_list import *
 from .graph import *
-from .mode import *
+from .mode_year_months import *
 from .notion import *
 from .slack import *
 
@@ -21,21 +17,27 @@ def main():
     parser.add_argument('date')
     args = parser.parse_args()
 
-    designated_date = Date(args.date)
-    designated_mode = Mode.create_instance(designated_date.date)
-    date_list = DateList.create_instance(designated_mode.mode, designated_date.date)
+    mode_year_months = ModeYearMonths(args.date)
 
     config_ini = configparser.ConfigParser()
     config_ini.read(Consts.PATH_CONFIG, encoding='utf-8')
 
     notion = Notion(config_ini['Notion']['database_id'], config_ini['Notion']['token'])
 
-    data = DataList.create_instance(notion, date_list.date_list)
-    data = DataDict.create_instance(data.data_list)
-    data = data.sort()
+    data_list = []
+    for month in mode_year_months.months:
+        response = notion.read_monthly_data(mode_year_months.year, month)
+        json_data = response.json()
+        data_list.extend(json_data.get('results'))
 
-    graph = Graph.create_instance(designated_mode.mode, designated_date.date, data.data_dict)
+    data_dict = {}
+    for data in data_list:
+        date = datetime.datetime.strptime(data['properties']['Date']['date']['start'], '%Y-%m-%d')
+        weight = data['properties']['Weight']['number']
+        data_dict[date] = weight
+    data_dict_sorted = dict(sorted(data_dict.items()))
 
+    graph = Graph(mode_year_months, data_dict_sorted)
     slack = Slack(config_ini['Slack']['channel_id'], config_ini['Slack']['token'])
     slack.notify(graph.sio)
 

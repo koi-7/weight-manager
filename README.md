@@ -33,18 +33,29 @@ $ sudo mv ~/weight-manager/ /opt/
 
 ### 実行
 
-``` bash
-$ cd /opt/weight-manager/
-$ python3 -m weight-manager 2023  # もしくは python3 -m weight-manager 2023/12 など
-```
-
 実行すると引数として指定した年 / 年月の体重遷移グラフが Slack に投稿される
 
-![](https://github.com/koi-7/weight-manager/assets/61448492/25459009-dbe0-4e1c-a7be-93f408799dd9)
+月指定
+
+``` bash
+$ cd /opt/weight-manager/
+$ python3 -m weight-manager 2024/01
+```
+
+![](https://github.com/koi-7/weight-manager/assets/61448492/c583ef4e-34fb-41f4-9ba4-7d6ae5968d81)
+
+年指定
+
+``` bash
+$ cd /opt/weight-manager/
+$ python3 -m weight-manager 2024
+```
+
+![](https://github.com/koi-7/weight-manager/assets/61448492/343241fb-886d-47be-95b6-9354a714e4a7)
 
 ## Example
 
-スクリプトをサーバ上において例えば以下のように Cron を設定しておけば月末にその年 / 月のグラフレポートが Slack で通知される
+スクリプトをサーバ上において例えば以下のように Cron を設定しておけば月末にその年 / 月のグラフレポートが Slack で通知される（環境: Ubuntu）
 
 ``` bash
 $ crontab -e
