@@ -6,7 +6,6 @@ import argparse
 import configparser
 import datetime
 
-from .graph import *
 from .mode_year_months import *
 from .notion import *
 from .slack import *
@@ -20,7 +19,7 @@ def main():
     mode_year_months = ModeYearMonths(args.date)
 
     config_ini = configparser.ConfigParser()
-    config_ini.read(Consts.PATH_CONFIG, encoding='utf-8')
+    config_ini.read(Const.PATH_CONFIG, encoding='utf-8')
 
     notion = Notion(config_ini['Notion']['database_id'], config_ini['Notion']['token'])
 
@@ -36,10 +35,6 @@ def main():
         weight = data['properties']['Weight']['number']
         data_dict[date] = weight
     data_dict_sorted = dict(sorted(data_dict.items()))
-
-    graph = Graph(mode_year_months, data_dict_sorted)
-    slack = Slack(config_ini['Slack']['channel_id'], config_ini['Slack']['token'])
-    slack.notify(graph.sio)
 
 
 if __name__ == '__main__':
