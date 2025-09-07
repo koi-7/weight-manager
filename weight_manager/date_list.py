@@ -1,7 +1,7 @@
 # coding: utf-8
 
 
-from .const import *
+from .const import Const
 
 
 class DateList:
@@ -9,11 +9,11 @@ class DateList:
     #     self.__date_list = date_list
 
     def __init__(self, mode_date):
-        if mode_date.mode == Const.MODE_MONTH:
+        if mode_date.mode == Const.Mode.MONTH:
             self.__date_list = [mode_date.date]
             return
 
-        if mode_date.mode == Const.MODE_YEAR:
+        if mode_date.mode == Const.Mode.YEAR:
             year = mode_date.date
             date_list = []
             for i in range(1, 13):
@@ -28,10 +28,10 @@ class DateList:
 
     # @classmethod
     # def create_instance(cls, mode, date):
-    #     if mode == Const.MODE_MONTH:
+    #     if mode == Const.Mode.MONTH:
     #         return DateList([date])
 
-    #     if mode == Const.MODE_YEAR:
+    #     if mode == Const.Mode.YEAR:
     #         date_list = []
     #         for i in range(1, 13):
     #             year_month = date + '/' + str(i).zfill(2)

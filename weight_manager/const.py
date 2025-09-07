@@ -5,9 +5,15 @@ import os
 
 
 class Const:
-    PATH_MAIN_DIR = os.path.dirname(__file__)
-    PATH_LOG = os.path.join(PATH_MAIN_DIR, '../logs/weight_manager.log')
-    PATH_CONFIG = os.path.join(PATH_MAIN_DIR, '../config/config.ini')
+    class Path:
+        _MAIN_DIR = os.path.dirname(__file__)
+        LOG = os.path.join(_MAIN_DIR, '../logs/weight_manager.log')
+        CONFIG = os.path.join(_MAIN_DIR, '../config/config.ini')
 
-    MODE_MONTH = 'month'
-    MODE_YEAR = 'year'
+    class Mode:
+        MONTH = 'month'
+        YEAR = 'year'
+
+    class DB:
+        CULUMN_DATE = 'Date'
+        CULUMN_WEIGHT = 'Weight'

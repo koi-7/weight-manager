@@ -4,8 +4,9 @@
 import re
 import sys
 
-from .const import *
+from .const import Const
 from .exceptions import *
+
 
 class ModeYearMonths:
     def __init__(self, date):
@@ -14,12 +15,12 @@ class ModeYearMonths:
         try:
             # date のパターンによって区別
             if re_year_month:
-                self.__mode = Const.MODE_MONTH
+                self.__mode = Const.Mode.MONTH
                 self.__year = re_year_month.group(1)
                 self.__months = [re_year_month.group(2)]
                 return
             if re_year:
-                self.__mode = Const.MODE_YEAR
+                self.__mode = Const.Mode.YEAR
                 self.__year = re_year.group(0)
                 self.__months = [str(m).zfill(2) for m in range(1, 13)]
                 return

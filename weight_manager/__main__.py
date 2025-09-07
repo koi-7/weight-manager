@@ -6,9 +6,10 @@ import argparse
 import configparser
 import datetime
 
-from .mode_year_months import *
-from .notion import *
-from .slack import *
+from .const import Const
+from .mode_year_months import ModeYearMonths
+from .notion import Notion
+from .slack import Slack
 
 
 def main():
@@ -19,7 +20,7 @@ def main():
     mode_year_months = ModeYearMonths(args.date)
 
     config_ini = configparser.ConfigParser()
-    config_ini.read(Const.PATH_CONFIG, encoding='utf-8')
+    config_ini.read(Const.Path.CONFIG, encoding='utf-8')
 
     notion = Notion(config_ini['Notion']['database_id'], config_ini['Notion']['token'])
 
@@ -31,10 +32,12 @@ def main():
 
     data_dict = {}
     for data in data_list:
-        date = datetime.datetime.strptime(data['properties']['Date']['date']['start'], '%Y-%m-%d')
-        weight = data['properties']['Weight']['number']
+        date = datetime.datetime.strptime(data['properties'][Const.DB.CULUMN_DATE]['date']['start'], '%Y-%m-%d')
+        weight = data['properties'][Const.DB.CULUMN_WEIGHT]['number']
         data_dict[date] = weight
     data_dict_sorted = dict(sorted(data_dict.items()))
+
+    print(len(data_dict_sorted))
 
 
 if __name__ == '__main__':
