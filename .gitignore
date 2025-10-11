@@ -1,8 +1,8 @@
 __pycache__/
 
 .mypy_cache/
-.temp/
 .venv/
+temp/
 
 config/*
 !config/template.ini
