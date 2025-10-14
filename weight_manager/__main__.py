@@ -2,9 +2,11 @@
 # coding: utf-8
 
 
+from datetime import datetime
 import argparse
 import configparser
-import datetime
+
+from gspread.exceptions import APIError, WorksheetNotFound
 
 from .const import Const
 from .mode_year_months import ModeYearMonths
@@ -23,12 +25,6 @@ def main():
 
     mode_year_months = ModeYearMonths(args.date)
 
-    google_api = GoogleApi(config_ini)
-    new_file_key = google_api.copy_template_file(mode_year_months)
-
-    exit()
-
-
     notion = Notion(config_ini['Notion']['database_id'], config_ini['Notion']['token'])
 
     data_list = []
@@ -39,10 +35,14 @@ def main():
 
     data_dict = {}
     for data in data_list:
-        date = datetime.datetime.strptime(data['properties'][Const.DB.CULUMN_DATE]['date']['start'], '%Y-%m-%d')
+        date = datetime.strptime(data['properties'][Const.DB.CULUMN_DATE]['date']['start'], '%Y-%m-%d')
         weight = data['properties'][Const.DB.CULUMN_WEIGHT]['number']
-        data_dict[date] = weight
+        data_dict[date.strftime('%Y/%m/%d')] = weight
     data_dict_sorted = dict(sorted(data_dict.items()))
+
+    google_api = GoogleApi(config_ini)
+    new_file_key = google_api.copy_template_file(mode_year_months)
+    google_api.write_data(new_file_key, data_dict_sorted)
 
 
 if __name__ == '__main__':

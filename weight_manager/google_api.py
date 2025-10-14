@@ -1,6 +1,7 @@
 # coding: utf-8
 
 
+from datetime import datetime
 import os
 import time
 
@@ -10,6 +11,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from gspread.exceptions import APIError, WorksheetNotFound
 
 from .const import Const
 from .exceptions import *
@@ -66,3 +68,20 @@ class GoogleApi:
             return f'{mode_year_month.year}'
 
         raise InvalidModeError
+
+    def write_data(self, file_key, data):
+        try:
+            spreadsheet = self.__gspread_client.open_by_key(file_key)
+        except APIError:
+            raise
+
+        try:
+            worksheet = spreadsheet.worksheet('Data')
+        except WorksheetNotFound:
+            raise
+
+        start_row = 3
+        goal_row = start_row + len(data) - 1
+
+        worksheet.update(f'B{start_row}:C{goal_row}', [[key, value] for key, value in data.items()], value_input_option='USER_ENTERED')
+        time.sleep(1)
