@@ -3,6 +3,7 @@
 
 from datetime import datetime
 import os
+import re
 import time
 
 import gspread
@@ -18,8 +19,10 @@ from .exceptions import *
 
 
 class GoogleApi:
-    def __init__(self, config_ini):
-        self.__template_file_key = config_ini['Google']['template_file_key']
+    def __init__(self, config_ini, mode_year_months):
+        self.__template_file_key = \
+            config_ini['Google']['template_month_file_key'] if mode_year_months.mode == Const.Mode.MONTH \
+            else config_ini['Google']['template_year_file_key']
         self.__destination_folder_id = config_ini['Google']['destination_folder_id']
 
         credentials = self._create_credentials()
@@ -80,8 +83,25 @@ class GoogleApi:
         except WorksheetNotFound:
             raise
 
-        start_row = 3
-        goal_row = start_row + len(data) - 1
+        weight_start_cell_address = self._get_cell_address_next_door(Const.GoogleApi.TEMPLATE_FILE_DATE_START_CELL_ADDRESS)
+        weight_column_letter, _ = self._parse_cell_address(weight_start_cell_address)
 
-        worksheet.update(f'B{start_row}:C{goal_row}', [[key, value] for key, value in data.items()], value_input_option='USER_ENTERED')
+        start_row_index, _ = gspread.utils.a1_to_rowcol(Const.GoogleApi.TEMPLATE_FILE_DATE_START_CELL_ADDRESS)
+        end_row_index = start_row_index + len(data) - 1
+
+        worksheet.update(f'{Const.GoogleApi.TEMPLATE_FILE_DATE_START_CELL_ADDRESS}:{weight_column_letter}{end_row_index}', [[key, value] for key, value in data.items()], value_input_option='USER_ENTERED')
         time.sleep(1)
+
+        worksheet.delete_rows(end_row_index + 1, 400)
+        time.sleep(1)
+
+    def _get_cell_address_next_door(self, cell_address):
+        '''渡されたセルアドレスの隣のセルアドレスを返す'''
+        row_index, column_index = gspread.utils.a1_to_rowcol(cell_address)
+        column_index_next_door = column_index + 1
+        return gspread.utils.rowcol_to_a1(row_index, column_index_next_door)
+
+    def _parse_cell_address(self, cell_address):
+        '''セルアドレスを列部分と行部分に分ける'''
+        re_cell = re.fullmatch(r'([A-Z]+)(\d+)', cell_address)
+        return re_cell.group(1), re_cell.group(2)

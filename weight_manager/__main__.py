@@ -40,7 +40,7 @@ def main():
         data_dict[date.strftime('%Y/%m/%d')] = weight
     data_dict_sorted = dict(sorted(data_dict.items()))
 
-    google_api = GoogleApi(config_ini)
+    google_api = GoogleApi(config_ini, mode_year_months)
     new_file_key = google_api.copy_template_file(mode_year_months)
     google_api.write_data(new_file_key, data_dict_sorted)
 

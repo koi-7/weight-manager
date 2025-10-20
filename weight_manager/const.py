@@ -16,6 +16,7 @@ class Const:
         SERVICE_NAME = 'drive'
         VERSION = 'v3'
         SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/spreadsheets']
+        TEMPLATE_FILE_DATE_START_CELL_ADDRESS = 'B3'
 
     class Mode:
         MONTH = 'month'
