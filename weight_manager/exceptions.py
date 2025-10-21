@@ -3,3 +3,6 @@
 
 class InvalidDateError(Exception):
     pass
+
+class InvalidModeError(Exception):
+    pass

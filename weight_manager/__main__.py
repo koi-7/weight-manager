@@ -2,14 +2,17 @@
 # coding: utf-8
 
 
+from datetime import datetime
 import argparse
 import configparser
-import datetime
 
-from .graph import *
-from .mode_year_months import *
-from .notion import *
-from .slack import *
+from gspread.exceptions import APIError, WorksheetNotFound
+
+from .const import Const
+from .mode_year_months import ModeYearMonths
+from .notion import Notion
+from .slack import Slack
+from .google_api import GoogleApi
 
 
 def main():
@@ -17,10 +20,10 @@ def main():
     parser.add_argument('date')
     args = parser.parse_args()
 
-    mode_year_months = ModeYearMonths(args.date)
-
     config_ini = configparser.ConfigParser()
-    config_ini.read(Consts.PATH_CONFIG, encoding='utf-8')
+    config_ini.read(Const.Path.CONFIG, encoding='utf-8')
+
+    mode_year_months = ModeYearMonths(args.date)
 
     notion = Notion(config_ini['Notion']['database_id'], config_ini['Notion']['token'])
 
@@ -32,14 +35,14 @@ def main():
 
     data_dict = {}
     for data in data_list:
-        date = datetime.datetime.strptime(data['properties']['Date']['date']['start'], '%Y-%m-%d')
-        weight = data['properties']['Weight']['number']
-        data_dict[date] = weight
+        date = datetime.strptime(data['properties'][Const.DB.CULUMN_DATE]['date']['start'], '%Y-%m-%d')
+        weight = data['properties'][Const.DB.CULUMN_WEIGHT]['number']
+        data_dict[date.strftime('%Y/%m/%d')] = weight
     data_dict_sorted = dict(sorted(data_dict.items()))
 
-    graph = Graph(mode_year_months, data_dict_sorted)
-    slack = Slack(config_ini['Slack']['channel_id'], config_ini['Slack']['token'])
-    slack.notify(graph.sio)
+    google_api = GoogleApi(config_ini, mode_year_months)
+    new_file_key = google_api.copy_template_file(mode_year_months)
+    google_api.write_data(new_file_key, data_dict_sorted)
 
 
 if __name__ == '__main__':

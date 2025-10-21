@@ -6,6 +6,8 @@ import time
 
 import requests
 
+from .const import Const
+
 
 class Notion:
     def __init__(self, database_id, token):
@@ -24,13 +26,13 @@ class Notion:
             'filter': {
                 'and': [
                     {
-                        'property': 'Date',
+                        'property': Const.DB.CULUMN_DATE,
                         'date': {
                             'on_or_after': date_after
                         }
                     },
                     {
-                        'property': 'Date',
+                        'property': Const.DB.CULUMN_DATE,
                         'date': {
                             'on_or_before': date_before
                         }
