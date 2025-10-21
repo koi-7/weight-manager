@@ -18,6 +18,12 @@ class Const:
         SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/spreadsheets']
         TEMPLATE_FILE_DATE_START_CELL_ADDRESS = 'B3'
 
+    class Slack:
+        API_URL = 'https://slack.com/api/chat.postMessage'
+        MONTHLY_MESSAGE_BASE = '{year} 年 {month} 月の集計です。'
+        YEARLY_MESSAGE_BASE = '{year} 年の集計です。'
+        SPREAD_SHEET_URL_BASE = 'https://docs.google.com/spreadsheets/d/{file_key}'
+
     class Mode:
         MONTH = 'month'
         YEAR = 'year'

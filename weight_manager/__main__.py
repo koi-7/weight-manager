@@ -44,6 +44,9 @@ def main():
     new_file_key = google_api.copy_template_file(mode_year_months)
     google_api.write_data(new_file_key, data_dict_sorted)
 
+    slack = Slack(config_ini)
+    slack.notify(mode_year_months, new_file_key)
+
 
 if __name__ == '__main__':
     main()
