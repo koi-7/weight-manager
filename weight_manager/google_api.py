@@ -31,6 +31,7 @@ class GoogleApi:
         self.__gspread_client = gspread.authorize(credentials)
 
     def _create_credentials(self):
+        '''Google 認証のための credencials を作成する'''
         credentials = None
 
         if os.path.exists(Const.Path.TOKEN):
@@ -48,10 +49,10 @@ class GoogleApi:
 
         return credentials
 
-    def copy_template_file(self, mode_year_month):
+    def copy_template_file(self, mode_year_months):
         '''テンプレートファイルをコピーし、そのファイルのキーを返す'''
         new_file_body = {
-            'name': self._get_filename_to_create(mode_year_month),
+            'name': self._get_filename_to_create(mode_year_months),
             'parents': [self.__destination_folder_id]
         }
 
@@ -63,16 +64,18 @@ class GoogleApi:
 
         return new_file['id']
 
-    def _get_filename_to_create(self, mode_year_month):
-        if mode_year_month.mode == Const.Mode.MONTH:
-            return f'{mode_year_month.year}{mode_year_month.months[0]}'
+    def _get_filename_to_create(self, mode_year_months):
+        '''モードに合ったファイル名を取得する'''
+        if mode_year_months.mode == Const.Mode.MONTH:
+            return f'{mode_year_months.year}{mode_year_months.months[0]}'
 
-        if mode_year_month.mode == Const.Mode.YEAR:
-            return f'{mode_year_month.year}'
+        if mode_year_months.mode == Const.Mode.YEAR:
+            return f'{mode_year_months.year}'
 
         raise InvalidModeError
 
     def write_data(self, file_key, data):
+        '''ファイルのデータを書き込む'''
         try:
             spreadsheet = self.__gspread_client.open_by_key(file_key)
         except APIError:
